@@ -17,6 +17,8 @@ object Token {
   case object EQUAL extends Token
   case object TRUE extends Token
   case object FALSE extends Token
+  case object LPAREN extends Token
+  case object RPAREN extends Token
   case class NUMBER(value: Int) extends Token
   case class IDENT(value: String) extends Token
 }
@@ -77,6 +79,8 @@ object Scanner {
           case Some(('>', stream)) => Some(Token.DARROW -> stream)
           case Some((_, stream)) => Some(Token.EQUAL -> stream)
         }
+      case Some(('(', stream)) =>  Some(Token.LPAREN -> stream)
+      case Some((')', stream)) =>  Some(Token.RPAREN -> stream)
       case _ => None
     }
   }
