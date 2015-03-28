@@ -9,7 +9,9 @@
          | "if" <EXPR> "then" <EXPR> "else" <EXPR>
          | "fn" <VAR> "=>" <EXPR>
          | <EXPR> <EXPR>
-         | "let" <BINDS> "in" <EXPR> "end"
+         | "let" <BIND> "in" <EXPR> "end"
+
+<BIND> ::= "val" <VAR> "=" <EXPR>
 
 <INT> ::= <DIGITS>
 
@@ -28,7 +30,4 @@
 
 <LETTERS> ::= ""
             | <LETTER> <LETTERS>
-
-<BINDS> ::= ""
-          | "val" <VAR> "=" <EXPR> <BINDS>
 ```
