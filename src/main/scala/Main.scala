@@ -1,18 +1,21 @@
 package bucharestfp
 
-import parser.Scanner
+import parser.{ Parser, Scanner }
 
 object Main {
   def main(args: Array[String]): Unit = {
     val tokens = Scanner.scan("""
       let
-        val a = 1
-        val b = 2
+        val id = fn a => a
       in
-        fn b => a
+        id 1
       end
     """)
 
     println(s"tokens: $tokens")
+
+    val absyn = Parser.parse(tokens)
+
+    println(s"absyn: $absyn")
   }
 }
