@@ -8,8 +8,9 @@
          | <IDENT>
          | "if" <EXPR> "then" <EXPR> "else" <EXPR>
          | "fn" <IDENT> "=>" <EXPR>
-         | <EXPR> <EXPR>
          | "let" <BIND> "in" <EXPR> "end"
+         | "(" <EXPR> ")"
+         | <EXPR> <EXPR>
 
 <BIND> ::= "val" <IDENT> "=" <EXPR>
 
