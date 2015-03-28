@@ -5,13 +5,13 @@
 ```bnf
 <EXPR> ::= <INT>
          | <BOOL>
-         | <VAR>
+         | <IDENT>
          | "if" <EXPR> "then" <EXPR> "else" <EXPR>
-         | "fn" <VAR> "=>" <EXPR>
+         | "fn" <IDENT> "=>" <EXPR>
          | <EXPR> <EXPR>
          | "let" <BIND> "in" <EXPR> "end"
 
-<BIND> ::= "val" <VAR> "=" <EXPR>
+<BIND> ::= "val" <IDENT> "=" <EXPR>
 
 <INT> ::= <DIGITS>
 
@@ -22,7 +22,7 @@
 <BOOL> ::= "true"
          | "false"
 
-<VAR> ::= <LETTER> <LETTERS>
+<IDENT> ::= <LETTER> <LETTERS>
 
 <LETTER> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k"
            | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v"
