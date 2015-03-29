@@ -1,18 +1,22 @@
 # Damas-Hindley-Milner
 
-## Grammar
+## BNF Grammar
 
 ```bnf
-<EXPR> ::= <INT>
-         | <BOOL>
-         | <IDENT>
-         | "if" <EXPR> "then" <EXPR> "else" <EXPR>
-         | "fn" <IDENT> "=>" <EXPR>
-         | "let" <BIND> "in" <EXPR> "end"
-         | "(" <EXPR> ")"
-         | <EXPR> <EXPR>
+<EXP> ::= <APPEXP>
+        | "if" <EXP> "then" <EXP> "else" <EXP>
+        | "fn" <IDENT> "=>" <EXP>
 
-<BIND> ::= "val" <IDENT> "=" <EXPR>
+<APPEXP> ::= <ATEXP>
+           | <APPEXP> <ATEXP>
+
+<ATEXP> ::= <INT>
+          | <BOOL>
+          | <IDENT>
+          | "let" <BIND> "in" <EXP> "end"
+          | "(" <EXP> ")"
+
+<BIND> ::= "val" <IDENT> "=" <EXP>
 
 <INT> ::= <DIGITS>
 
@@ -20,8 +24,7 @@
 
 <DIGIT> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 
-<BOOL> ::= "true"
-         | "false"
+<BOOL> ::= "true" | "false"
 
 <IDENT> ::= <LETTER> <LETTERS>
 
@@ -29,6 +32,5 @@
            | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v"
            | "w" | "x" | "y" | "z"
 
-<LETTERS> ::= ""
-            | <LETTER> <LETTERS>
+<LETTERS> ::= "" | <LETTER> <LETTERS>
 ```
