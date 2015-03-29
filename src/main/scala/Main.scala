@@ -6,9 +6,9 @@ object Main {
   def main(args: Array[String]): Unit = {
     val tokens = Scanner.scan("""
       let
-        val id = fn a => a
+        val const = fn a => fn b => a
       in
-        id 1
+        const 1 2
       end
     """)
 
