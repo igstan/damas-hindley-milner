@@ -6,8 +6,8 @@ object Annotate {
   def annotate(absyn: Absyn, tenv: TypeEnv): Tysyn = {
     absyn match {
       case Absyn.INT(value) => Tysyn.INT(Type.INT, value)
-      case Absyn.ADD(a, b) => Tysyn.ADD(Type.FN(Type.INT, Type.INT), annotate(a, tenv), annotate(b, tenv))
-      case Absyn.SUB(a, b) => Tysyn.SUB(Type.FN(Type.INT, Type.INT), annotate(a, tenv), annotate(b, tenv))
+      case Absyn.ADD(a, b) => Tysyn.ADD(Type.INT, annotate(a, tenv), annotate(b, tenv))
+      case Absyn.SUB(a, b) => Tysyn.SUB(Type.INT, annotate(a, tenv), annotate(b, tenv))
       case Absyn.BOOL(value) => Tysyn.BOOL(Type.BOOL, value)
       case Absyn.VAR(name) =>
         tenv.lookup(name) match {
