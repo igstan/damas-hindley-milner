@@ -1,5 +1,31 @@
 # Damas-Hindley-Milner
 
+## Example Programs
+
+```sml
+let
+  val id = fn a => a
+in
+  const 1
+end
+```
+
+```sml
+if true then 1 else 2
+```
+
+```sml
+let
+  val add = fn a => fn b => a + b
+in
+  add 1 2
+end
+```
+
+```sml
+(fn a => a) 42
+```
+
 ## BNF Grammar
 
 ```bnf
