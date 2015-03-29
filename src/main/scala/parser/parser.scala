@@ -98,10 +98,29 @@ object Parser {
     }
   }
 
+  private def parseInfExp(tokens: List[Token]): (Absyn, List[Token]) = {
+    @annotation.tailrec
+    def recur(tokens: List[Token], absyn: Absyn): (Absyn, List[Token]) = {
+      // 1 token lookahead
+      tokens match {
+        case PLUS :: tokens =>
+          val (inner, rest) = parseInfExp(tokens)
+          recur(rest, Absyn.ADD(absyn, inner))
+        case MINUS :: tokens =>
+          val (inner, rest) = parseInfExp(tokens)
+          recur(rest, Absyn.SUB(absyn, inner))
+        case _ => absyn -> tokens
+      }
+    }
+
+    val (atExp, rest) = parseAppExp(tokens)
+    recur(rest, atExp)
+  }
+
   // <EXP>
   private def parseExp(tokens: List[Token]): (Absyn, List[Token]) = {
     tokens match {
-      case tokens if nextIsAtExp(tokens) => parseAppExp(tokens)
+      case tokens if nextIsAtExp(tokens) => parseInfExp(tokens)
       case IF :: tokens => parseIf(tokens)
       case FN :: tokens => parseFn(tokens)
       case token :: _ => throw ParseError(token, NUMBER(0), TRUE, FALSE, IDENT("?"), LET, LPAREN, IF, FN)

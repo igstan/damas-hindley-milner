@@ -19,6 +19,8 @@ object Token {
   case object FALSE extends Token
   case object LPAREN extends Token
   case object RPAREN extends Token
+  case object PLUS extends Token
+  case object MINUS extends Token
   case class NUMBER(value: Int) extends Token
   case class IDENT(value: String) extends Token
 }
@@ -81,6 +83,8 @@ object Scanner {
         }
       case Some(('(', stream)) =>  Some(Token.LPAREN -> stream)
       case Some((')', stream)) =>  Some(Token.RPAREN -> stream)
+      case Some(('+', stream)) =>  Some(Token.PLUS -> stream)
+      case Some(('-', stream)) =>  Some(Token.MINUS -> stream)
       case _ => None
     }
   }

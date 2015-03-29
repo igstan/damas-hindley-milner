@@ -3,9 +3,12 @@
 ## BNF Grammar
 
 ```bnf
-<EXP> ::= <APPEXP>
+<EXP> ::= <INFEXP>
         | "if" <EXP> "then" <EXP> "else" <EXP>
         | "fn" <IDENT> "=>" <EXP>
+
+<INFEXP> ::= <APPEXP>
+           | <INFEXP> <OP> <INFEXP>
 
 <APPEXP> ::= <ATEXP>
            | <APPEXP> <ATEXP>
@@ -17,6 +20,8 @@
           | "(" <EXP> ")"
 
 <BIND> ::= "val" <IDENT> "=" <EXP>
+
+<OP> ::= "+" | "-"
 
 <INT> ::= <DIGITS>
 
