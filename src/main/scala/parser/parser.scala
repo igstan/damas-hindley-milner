@@ -136,12 +136,7 @@ object Parser {
         rest match {
           case ELSE :: tokens =>
             val (no, rest) = parseExp(tokens)
-            rest match {
-              case END :: tokens =>
-                Absyn.IF(test, yes, no) -> tokens
-              case token :: _ => throw ParseError(token, END)
-              case _ => throw UnexpectedEndOfStream(END)
-            }
+            Absyn.IF(test, yes, no) -> rest
           case token :: _ => throw ParseError(token, ELSE)
           case _ => throw UnexpectedEndOfStream(ELSE)
         }
