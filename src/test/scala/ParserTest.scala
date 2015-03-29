@@ -17,13 +17,32 @@ class ParserTest extends FunSuite with Matchers {
     tokens should be {
       LET(
         "arith",
-        FN("a", FN("b", FN("c", ADD(VAR("a"), ADD(VAR("b"), VAR("c")))))),
+        FN("a",
+          FN("b",
+            FN("c",
+              ADD(
+                VAR("a"),
+                ADD(
+                  VAR("b"),
+                  VAR("c")
+                )
+              )
+            )
+          )
+        ),
         APP(
           APP(
-            APP(VAR("arith"), INT(1)),
+            APP(
+              VAR("arith"),
+              INT(1)
+            ),
             INT(2)
           ),
-          IF(BOOL(true), INT(3), INT(4))
+          IF(
+            BOOL(true),
+            INT(3),
+            INT(4)
+          )
         )
       )
     }
