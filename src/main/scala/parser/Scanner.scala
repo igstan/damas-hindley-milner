@@ -19,10 +19,10 @@ object Token {
   case object FALSE extends Token
   case object LPAREN extends Token
   case object RPAREN extends Token
-  case object PLUS extends Token
-  case object MINUS extends Token
-  case class NUMBER(value: Int) extends Token
-  case class IDENT(value: String) extends Token
+  case object ADD extends Token
+  case object SUB extends Token
+  case class INT(value: Int) extends Token
+  case class VAR(value: String) extends Token
 }
 
 object Scanner {
@@ -83,8 +83,8 @@ object Scanner {
         }
       case Some(('(', stream)) =>  Some(Token.LPAREN -> stream)
       case Some((')', stream)) =>  Some(Token.RPAREN -> stream)
-      case Some(('+', stream)) =>  Some(Token.PLUS -> stream)
-      case Some(('-', stream)) =>  Some(Token.MINUS -> stream)
+      case Some(('+', stream)) =>  Some(Token.ADD -> stream)
+      case Some(('-', stream)) =>  Some(Token.SUB -> stream)
       case _ => None
     }
   }
@@ -110,7 +110,7 @@ object Scanner {
       case ("val", s) => Token.VAL -> s
       case ("true", s) => Token.TRUE -> s
       case ("false", s) => Token.FALSE -> s
-      case (ident, s) => Token.IDENT(ident) -> s
+      case (ident, s) => Token.VAR(ident) -> s
     }
   }
 
@@ -124,7 +124,7 @@ object Scanner {
     }
 
     recur(stream, None).map {
-      case (n, s) => Token.NUMBER(n) -> s
+      case (n, s) => Token.INT(n) -> s
     }
   }
 

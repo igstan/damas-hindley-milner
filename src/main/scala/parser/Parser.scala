@@ -14,17 +14,17 @@ object Parser {
     parseExp(tokens) match {
       case (absyn, Nil) => absyn
       case (_, token :: _) =>
-        throw ParseError(token, NUMBER(0), TRUE, FALSE, IDENT("?"), IF, FN, LET)
+        throw ParseError(token, INT(0), TRUE, FALSE, VAR("?"), IF, FN, LET)
     }
   }
 
   // <ATEXP>
   private def parseAtExp(tokens: List[Token]): (Absyn, List[Token]) = {
     tokens match {
-      case NUMBER(n) :: tokens => Absyn.INT(n) -> tokens
+      case INT(n) :: tokens => Absyn.INT(n) -> tokens
       case TRUE :: tokens => Absyn.BOOL(true) -> tokens
       case FALSE :: tokens => Absyn.BOOL(false) -> tokens
-      case IDENT(id) :: tokens => Absyn.VAR(id) -> tokens
+      case VAR(id) :: tokens => Absyn.VAR(id) -> tokens
       case LET :: tokens => parseLet(tokens)
       case LPAREN :: tokens =>
         val (exp, rest) = parseExp(tokens)
@@ -33,8 +33,8 @@ object Parser {
           case token :: _ => throw ParseError(token, RPAREN)
           case _ => throw UnexpectedEndOfStream(RPAREN)
         }
-      case token :: _ => throw ParseError(token, NUMBER(0), TRUE, FALSE, IDENT("?"), LET, LPAREN)
-      case _ => throw UnexpectedEndOfStream(NUMBER(0), TRUE, FALSE, IDENT("?"), LET, LPAREN)
+      case token :: _ => throw ParseError(token, INT(0), TRUE, FALSE, VAR("?"), LET, LPAREN)
+      case _ => throw UnexpectedEndOfStream(INT(0), TRUE, FALSE, VAR("?"), LET, LPAREN)
     }
   }
 
@@ -42,7 +42,7 @@ object Parser {
     tokens match {
       case VAL :: tokens =>
         tokens match {
-          case IDENT(bindingName) :: tokens =>
+          case VAR(bindingName) :: tokens =>
             tokens match {
               case EQUAL :: tokens =>
                 val (bindingValue, rest) = parseExp(tokens)
@@ -61,8 +61,8 @@ object Parser {
               case token :: _ => throw ParseError(token, EQUAL)
               case _ => throw UnexpectedEndOfStream(EQUAL)
             }
-          case token :: _ => throw ParseError(token, IDENT("?"))
-          case _ => throw UnexpectedEndOfStream(IDENT("?"))
+          case token :: _ => throw ParseError(token, VAR("?"))
+          case _ => throw UnexpectedEndOfStream(VAR("?"))
         }
       case token :: _ => throw ParseError(token, VAL)
       case _ => throw UnexpectedEndOfStream(VAL)
@@ -88,10 +88,10 @@ object Parser {
 
   private def nextIsAtExp(tokens: List[Token]): Boolean = {
     tokens match {
-      case NUMBER(_) :: _ => true
+      case INT(_) :: _ => true
       case FALSE :: _ => true
       case TRUE :: _ => true
-      case IDENT(_) :: _ => true
+      case VAR(_) :: _ => true
       case LET :: _ => true
       case LPAREN :: _ => true
       case _ => false
@@ -103,10 +103,10 @@ object Parser {
     def recur(tokens: List[Token], absyn: Absyn): (Absyn, List[Token]) = {
       // 1 token lookahead
       tokens match {
-        case PLUS :: tokens =>
+        case ADD :: tokens =>
           val (inner, rest) = parseInfExp(tokens)
           recur(rest, Absyn.ADD(absyn, inner))
-        case MINUS :: tokens =>
+        case SUB :: tokens =>
           val (inner, rest) = parseInfExp(tokens)
           recur(rest, Absyn.SUB(absyn, inner))
         case _ => absyn -> tokens
@@ -123,8 +123,8 @@ object Parser {
       case tokens if nextIsAtExp(tokens) => parseInfExp(tokens)
       case IF :: tokens => parseIf(tokens)
       case FN :: tokens => parseFn(tokens)
-      case token :: _ => throw ParseError(token, NUMBER(0), TRUE, FALSE, IDENT("?"), LET, LPAREN, IF, FN)
-      case _ => throw UnexpectedEndOfStream(NUMBER(0), TRUE, FALSE, IDENT("?"), LET, LPAREN, IF, FN)
+      case token :: _ => throw ParseError(token, INT(0), TRUE, FALSE, VAR("?"), LET, LPAREN, IF, FN)
+      case _ => throw UnexpectedEndOfStream(INT(0), TRUE, FALSE, VAR("?"), LET, LPAREN, IF, FN)
     }
   }
 
@@ -147,7 +147,7 @@ object Parser {
 
   private def parseFn(tokens: List[Token]): (Absyn, List[Token]) = {
     tokens match {
-      case IDENT(param) :: rest =>
+      case VAR(param) :: rest =>
         rest match {
           case DARROW :: tokens =>
             val (body, rest) = parseExp(tokens)
@@ -155,8 +155,8 @@ object Parser {
           case token :: _ => throw ParseError(token, DARROW)
           case _ => throw UnexpectedEndOfStream(DARROW)
         }
-      case token :: _ => throw ParseError(token, IDENT("?"))
-      case _ => throw UnexpectedEndOfStream(IDENT("?"))
+      case token :: _ => throw ParseError(token, VAR("?"))
+      case _ => throw UnexpectedEndOfStream(VAR("?"))
     }
   }
 }
