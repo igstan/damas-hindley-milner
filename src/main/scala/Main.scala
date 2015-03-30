@@ -4,16 +4,20 @@ import parser.Parser
 
 object Main {
   def main(args: Array[String]): Unit = {
-    val program = """
+    println("typeOf(inc): " + Infer.typeOf(Parser.parse("""
       let
         val inc = fn a => a + 1
       in
         inc 42
       end
-    """
+    """)))
 
-    val ty = Infer.typeOf(Parser.parse(program))
+    println("typeOf(const): " + Infer.typeOf(Parser.parse("""
+      fn a => fn b => a
+    """)))
 
-    println(s"ty: $ty")
+    println("typeOf(pred): " + Infer.typeOf(Parser.parse("""
+      fn pred => if pred 1 then 2 else 3
+    """)))
   }
 }
