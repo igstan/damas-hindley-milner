@@ -9,11 +9,6 @@ object Annotate {
       case Absyn.ADD(a, b) => Tysyn.ADD(Type.TINT, annotate(a, tenv), annotate(b, tenv))
       case Absyn.SUB(a, b) => Tysyn.SUB(Type.TINT, annotate(a, tenv), annotate(b, tenv))
       case Absyn.BOOL(value) => Tysyn.BOOL(Type.TBOOL, value)
-      case Absyn.VAR(name) =>
-        tenv.lookup(name) match {
-          case None => throw UnboundIdentifier(name)
-          case Some(ty) => Tysyn.VAR(ty, name)
-        }
       case Absyn.IF(test, yes, no) =>
         Tysyn.IF(Type.freshVar(), annotate(test, tenv), annotate(yes, tenv), annotate(no, tenv))
       case Absyn.APP(fn, arg) =>
@@ -25,6 +20,11 @@ object Annotate {
         val bodyType = annotatedBody.ty
         val fnType = Type.TFN(paramType, bodyType)
         Tysyn.FN(fnType, param, annotatedBody)
+      case Absyn.VAR(name) =>
+        tenv.lookup(name) match {
+          case None => throw UnboundIdentifier(name)
+          case Some(ty) => Tysyn.VAR(ty, name)
+        }
       case Absyn.LET(binding, value, body) =>
         val annotatedValue = annotate(value, tenv)
         val extendedTenv = tenv.set(binding, annotatedValue.ty)
