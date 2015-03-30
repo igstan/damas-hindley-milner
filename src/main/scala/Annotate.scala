@@ -41,41 +41,31 @@ object Constrain {
   import Tysyn._
 
   def constrain(tysyn: Tysyn): List[Constraint] = {
-    def loop(tysyns: List[Tysyn], constraints: List[Constraint]): List[Constraint] = {
-      tysyns match {
-        case Nil => constraints
-        case tysyn :: rest =>
-          tysyn match {
-            case INT(_, _) => loop(rest, constraints)
-            case ADD(_, a, b) =>
-              val aConstr = Constraint(a.ty, Type.TINT)
-              val bConstr = Constraint(b.ty, Type.TINT)
-              loop(a :: b :: rest, aConstr :: bConstr :: constraints)
-            case SUB(_, a, b) =>
-              val aConstr = Constraint(a.ty, Type.TINT)
-              val bConstr = Constraint(b.ty, Type.TINT)
-              loop(a :: b :: rest, aConstr :: bConstr :: constraints)
-            case BOOL(_, _) => loop(rest, constraints)
-            case VAR(_, _) => loop(rest, constraints)
-            case FN(_, _, body) => loop(body :: rest, constraints)
-            case IF(ty, test, yes, no) =>
-              val ifConstr = Constraint(ty, yes.ty)
-              val testConstr = Constraint(test.ty, Type.TBOOL)
-              val branchConstr = Constraint(yes.ty, no.ty)
-              val newConstraints = ifConstr :: testConstr :: branchConstr :: constraints
-              loop(test :: yes :: no :: rest, newConstraints)
-            case APP(ty, fn, arg) =>
-              val appConstr = Constraint(fn.ty, Type.TFN(arg.ty, ty))
-              val newConstraints = appConstr :: constraints
-              loop(fn :: arg :: rest, newConstraints)
-            case LET(ty, binding, value, body) =>
-              val letConstr = Constraint(ty, body.ty)
-              val newConstraints = letConstr :: constraints
-              loop(value :: body :: rest, newConstraints)
-          }
-      }
+    tysyn match {
+      case INT(_, _) => List.empty
+      case ADD(_, a, b) =>
+        List(
+          Constraint(a.ty, Type.TINT),
+          Constraint(b.ty, Type.TINT)
+        ) ++ constrain(a) ++ constrain(b)
+      case SUB(_, a, b) =>
+        List(
+          Constraint(a.ty, Type.TINT),
+          Constraint(b.ty, Type.TINT)
+        ) ++ constrain(a) ++ constrain(b)
+      case BOOL(_, _) => List.empty
+      case VAR(_, _) => List.empty
+      case FN(_, _, body) => constrain(body)
+      case IF(ty, test, yes, no) =>
+        List(
+          Constraint(ty, yes.ty),
+          Constraint(test.ty, Type.TBOOL),
+          Constraint(yes.ty, no.ty)
+        ) ++ constrain(test) ++ constrain(yes) ++ constrain(no)
+      case APP(ty, fn, arg) =>
+        Constraint(fn.ty, Type.TFN(arg.ty, ty)) :: constrain(fn) ++ constrain(arg)
+      case LET(ty, _, value, body) =>
+        Constraint(ty, body.ty) :: constrain(value) ++ constrain(body)
     }
-
-    loop(List(tysyn), List.empty[Constraint])
   }
 }
