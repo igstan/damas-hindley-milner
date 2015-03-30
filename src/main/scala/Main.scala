@@ -12,10 +12,8 @@ object Main {
       end
     """
 
-    val absyn = Parser.parse(Scanner.scan(program))
-    val ty = Infer.typeOf(absyn)
+    val ty = Infer.typeOf(Parser.parse(Scanner.scan(program)))
 
-    println(s"absyn: $absyn")
     println(s"ty: $ty")
   }
 }
