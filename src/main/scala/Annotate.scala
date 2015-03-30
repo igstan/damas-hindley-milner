@@ -7,10 +7,10 @@ object Annotate {
 
   def annotate(absyn: Absyn, tenv: TypeEnv): Tysyn = {
     absyn match {
-      case INT(value) => Tysyn.INT(Type.TINT, value)
-      case ADD(a, b) => Tysyn.ADD(Type.TINT, annotate(a, tenv), annotate(b, tenv))
-      case SUB(a, b) => Tysyn.SUB(Type.TINT, annotate(a, tenv), annotate(b, tenv))
-      case BOOL(value) => Tysyn.BOOL(Type.TBOOL, value)
+      case INT(value) => Tysyn.INT(TINT, value)
+      case ADD(a, b) => Tysyn.ADD(TINT, annotate(a, tenv), annotate(b, tenv))
+      case SUB(a, b) => Tysyn.SUB(TINT, annotate(a, tenv), annotate(b, tenv))
+      case BOOL(value) => Tysyn.BOOL(TBOOL, value)
       case IF(test, yes, no) =>
         Tysyn.IF(Type.freshVar(), annotate(test, tenv), annotate(yes, tenv), annotate(no, tenv))
       case APP(fn, arg) =>
@@ -20,7 +20,7 @@ object Annotate {
         val extendedTenv = tenv.set(param, paramType)
         val annotatedBody = annotate(body, extendedTenv)
         val bodyType = annotatedBody.ty
-        val fnType = Type.TFN(paramType, bodyType)
+        val fnType = TFN(paramType, bodyType)
         Tysyn.FN(fnType, param, annotatedBody)
       case VAR(name) =>
         tenv.lookup(name) match {
@@ -47,13 +47,13 @@ object Constrain {
       case INT(_, _) => List.empty
       case ADD(_, a, b) =>
         List(
-          Constraint(a.ty, Type.TINT),
-          Constraint(b.ty, Type.TINT)
+          Constraint(a.ty, TINT),
+          Constraint(b.ty, TINT)
         ) ++ constrain(a) ++ constrain(b)
       case SUB(_, a, b) =>
         List(
-          Constraint(a.ty, Type.TINT),
-          Constraint(b.ty, Type.TINT)
+          Constraint(a.ty, TINT),
+          Constraint(b.ty, TINT)
         ) ++ constrain(a) ++ constrain(b)
       case BOOL(_, _) => List.empty
       case VAR(_, _) => List.empty
@@ -61,11 +61,11 @@ object Constrain {
       case IF(ty, test, yes, no) =>
         List(
           Constraint(ty, yes.ty),
-          Constraint(test.ty, Type.TBOOL),
+          Constraint(test.ty, TBOOL),
           Constraint(yes.ty, no.ty)
         ) ++ constrain(test) ++ constrain(yes) ++ constrain(no)
       case APP(ty, fn, arg) =>
-        Constraint(fn.ty, Type.TFN(arg.ty, ty)) :: constrain(fn) ++ constrain(arg)
+        Constraint(fn.ty, TFN(arg.ty, ty)) :: constrain(fn) ++ constrain(arg)
       case LET(ty, _, value, body) =>
         Constraint(ty, body.ty) :: constrain(value) ++ constrain(body)
     }

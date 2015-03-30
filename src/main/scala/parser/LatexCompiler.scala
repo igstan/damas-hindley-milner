@@ -67,10 +67,10 @@ object LatexCompiler {
 
     def subscript(ty: Type): String = {
       ty match {
-        case Type.TINT => "{int}"
-        case Type.TBOOL => "{bool}"
-        case Type.TFN(paramTy, returnTy) => "{" + subscript(paramTy) + "} \\rightarrow " + subscript(returnTy)
-        case Type.TVAR(index) => "{t_" + index.toString + "}"
+        case TINT => "{int}"
+        case TBOOL => "{bool}"
+        case TFN(paramTy, returnTy) => "{" + subscript(paramTy) + "} \\rightarrow " + subscript(returnTy)
+        case TVAR(index) => "{t_" + index.toString + "}"
       }
     }
 

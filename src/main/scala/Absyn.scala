@@ -17,13 +17,14 @@ object Absyn {
 }
 
 sealed trait Type
+
+case object TINT extends Type
+case object TBOOL extends Type
+case class TFN(paramTy: Type, returnTy: Type) extends Type
+case class TVAR(index: Type.Var) extends Type
+
 object Type {
   type Var = Int
-
-  case object TINT extends Type
-  case object TBOOL extends Type
-  case class TFN(paramTy: Type, returnTy: Type) extends Type
-  case class TVAR(index: Var) extends Type
 
   private var counter = -1
 
