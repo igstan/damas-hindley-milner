@@ -18,16 +18,18 @@ object Absyn {
 
 sealed trait Type
 object Type {
-  case object INT extends Type
-  case object BOOL extends Type
-  case class FN(paramTy: Type, returnTy: Type) extends Type
-  case class VAR(index: Int) extends Type
+  type Var = Int
+
+  case object TINT extends Type
+  case object TBOOL extends Type
+  case class TFN(paramTy: Type, returnTy: Type) extends Type
+  case class TVAR(index: Var) extends Type
 
   private var counter = -1
 
   def freshVar(): Type = {
     counter += 1
-    VAR(counter)
+    TVAR(counter)
   }
 }
 

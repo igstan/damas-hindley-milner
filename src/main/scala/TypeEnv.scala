@@ -9,3 +9,7 @@ class TypeEnv(bindings: Map[String, Type]) {
     new TypeEnv(bindings + (key -> value))
   }
 }
+
+object TypeEnv {
+  def empty = new TypeEnv(Map.empty)
+}

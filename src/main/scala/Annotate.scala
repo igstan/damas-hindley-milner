@@ -5,10 +5,10 @@ case class UnboundIdentifier(name: String) extends RuntimeException(s"unbound id
 object Annotate {
   def annotate(absyn: Absyn, tenv: TypeEnv): Tysyn = {
     absyn match {
-      case Absyn.INT(value) => Tysyn.INT(Type.INT, value)
-      case Absyn.ADD(a, b) => Tysyn.ADD(Type.INT, annotate(a, tenv), annotate(b, tenv))
-      case Absyn.SUB(a, b) => Tysyn.SUB(Type.INT, annotate(a, tenv), annotate(b, tenv))
-      case Absyn.BOOL(value) => Tysyn.BOOL(Type.BOOL, value)
+      case Absyn.INT(value) => Tysyn.INT(Type.TINT, value)
+      case Absyn.ADD(a, b) => Tysyn.ADD(Type.TINT, annotate(a, tenv), annotate(b, tenv))
+      case Absyn.SUB(a, b) => Tysyn.SUB(Type.TINT, annotate(a, tenv), annotate(b, tenv))
+      case Absyn.BOOL(value) => Tysyn.BOOL(Type.TBOOL, value)
       case Absyn.VAR(name) =>
         tenv.lookup(name) match {
           case None => throw UnboundIdentifier(name)
@@ -23,7 +23,7 @@ object Annotate {
         val extendedTenv = tenv.set(param, paramType)
         val annotatedBody = annotate(body, extendedTenv)
         val bodyType = annotatedBody.ty
-        val fnType = Type.FN(paramType, bodyType)
+        val fnType = Type.TFN(paramType, bodyType)
         Tysyn.FN(fnType, param, annotatedBody)
       case Absyn.LET(binding, value, body) =>
         val annotatedValue = annotate(value, tenv)
@@ -54,14 +54,14 @@ object Constrain {
             case FN(_, _, body) => loop(body :: rest, constraints)
             case IF(ty, test, yes, no) =>
               val ifConstr = Constraint(ty, yes.ty)
-              val testConstr = Constraint(test.ty, Type.BOOL)
+              val testConstr = Constraint(test.ty, Type.TBOOL)
               val branchConstr = Constraint(yes.ty, no.ty)
               val newConstraints = ifConstr :: testConstr :: branchConstr :: constraints
               loop(test :: yes :: no :: rest, newConstraints)
             case APP(ty, fn, arg) =>
               // Commented version is from lingua-002, make sure they both work the same.
-              // val appConstr = Constraint(fn.ty, Type.FN(arg.ty, ty))
-              val appConstr = Constraint(ty, Type.FN(arg.ty, fn.ty))
+              // val appConstr = Constraint(fn.ty, Type.TFN(arg.ty, ty))
+              val appConstr = Constraint(ty, Type.TFN(arg.ty, fn.ty))
               val newConstraints = appConstr :: constraints
               loop(fn :: arg :: rest, newConstraints)
             case LET(ty, binding, value, body) =>

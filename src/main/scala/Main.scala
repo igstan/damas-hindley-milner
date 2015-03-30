@@ -4,18 +4,18 @@ import parser.{ Parser, Scanner }
 
 object Main {
   def main(args: Array[String]): Unit = {
-    val tokens = Scanner.scan("""
+    val program = """
       let
-        val const = fn a => fn b => a
+        val inc = fn a => a + 1
       in
-        const 1 2
+        inc 42
       end
-    """)
+    """
 
-    println(s"tokens: $tokens")
-
-    val absyn = Parser.parse(tokens)
+    val absyn = Parser.parse(Scanner.scan(program))
+    val ty = Infer.typeOf(absyn)
 
     println(s"absyn: $absyn")
+    println(s"ty: $ty")
   }
 }
