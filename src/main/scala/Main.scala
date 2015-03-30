@@ -1,6 +1,6 @@
 package bucharestfp
 
-import parser.{ Parser, Scanner }
+import parser.Parser
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -12,7 +12,7 @@ object Main {
       end
     """
 
-    val ty = Infer.typeOf(Parser.parse(Scanner.scan(program)))
+    val ty = Infer.typeOf(Parser.parse(program))
 
     println(s"ty: $ty")
   }

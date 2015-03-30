@@ -10,6 +10,10 @@ case class ParseError(found: Token, expected: Token*)
 object Parser {
   import Token._
 
+  def parse(source: String): Absyn = {
+    parse(Scanner.scan(source))
+  }
+
   def parse(tokens: List[Token]): Absyn = {
     parseExp(tokens) match {
       case (absyn, Nil) => absyn
