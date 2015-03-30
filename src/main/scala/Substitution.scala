@@ -1,6 +1,6 @@
 package bucharestfp
 
-class Substitution(val records: List[(Type.Var, Type)]) {
+case class Substitution(records: List[(Type.Var, Type)]) {
   import Type._
 
   def apply(ty: Type): Type = {
@@ -24,10 +24,10 @@ class Substitution(val records: List[(Type.Var, Type)]) {
   }
 
   def compose(other: Substitution): Substitution = {
-    new Substitution(records ++ other.records)
+    Substitution(records ++ other.records)
   }
 }
 
 object Substitution {
-  def empty = new Substitution(List.empty)
+  def empty = Substitution(List.empty)
 }
