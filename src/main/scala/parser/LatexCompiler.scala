@@ -5,9 +5,9 @@ object LatexCompiler {
   def compile(args: Array[String]): Unit = {
     val absyn = Parser.parse(Scanner.scan("""
       let
-        val const = fn a => fn b => a
+        val inc = fn a => a + 1
       in
-        const 1 2
+        inc 42
       end
     """))
 
