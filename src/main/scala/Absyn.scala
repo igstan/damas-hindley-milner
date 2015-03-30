@@ -24,13 +24,22 @@ case class TFN(paramTy: Type, returnTy: Type) extends Type
 case class TVAR(index: Type.Var) extends Type
 
 object Type {
-  type Var = Int
+  case class Var(value: Int) extends AnyVal {
+    def occursIn(ty: Type): Boolean = {
+      ty match {
+        case TINT => false
+        case TBOOL => false
+        case TVAR(other) => this == other
+        case TFN(paramTy, returnTy) => occursIn(paramTy) || occursIn(returnTy)
+      }
+    }
+  }
 
   private var counter = -1
 
   def freshVar(): Type = {
     counter += 1
-    TVAR(counter)
+    TVAR(Var(counter))
   }
 }
 
