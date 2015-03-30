@@ -18,6 +18,10 @@ object Unifier {
       case (TINT, TINT) => Substitution.empty
       case (TBOOL, TBOOL) => Substitution.empty
       case (TFN(param1, return1), TFN(param2, return2)) =>
+        // We can't generate these constraints in the constraint generation
+        // phase because the two function types we have here may appear as a
+        // result of unification itself, so the constraint generation phase
+        // can't know about them.
         unify(List(
           Constraint(param1, param2),
           Constraint(return1, return2)
