@@ -4,7 +4,7 @@ class Substitution(val records: List[(Type.Var, Type)]) {
   import Type._
 
   def apply(ty: Type): Type = {
-    records.foldRight(ty) { (record, ty) =>
+    records.foldLeft(ty) { (ty, record) =>
       applyRecord(ty, record)
     }
   }

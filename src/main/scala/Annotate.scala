@@ -47,8 +47,14 @@ object Constrain {
         case tysyn :: rest =>
           tysyn match {
             case INT(_, _) => loop(rest, constraints)
-            case ADD(_, a, b) => loop(a :: b :: rest, constraints)
-            case SUB(_, a, b) => loop(a :: b :: rest, constraints)
+            case ADD(_, a, b) =>
+              val aConstr = Constraint(a.ty, Type.TINT)
+              val bConstr = Constraint(b.ty, Type.TINT)
+              loop(a :: b :: rest, aConstr :: bConstr :: constraints)
+            case SUB(_, a, b) =>
+              val aConstr = Constraint(a.ty, Type.TINT)
+              val bConstr = Constraint(b.ty, Type.TINT)
+              loop(a :: b :: rest, aConstr :: bConstr :: constraints)
             case BOOL(_, _) => loop(rest, constraints)
             case VAR(_, _) => loop(rest, constraints)
             case FN(_, _, body) => loop(body :: rest, constraints)
@@ -59,9 +65,7 @@ object Constrain {
               val newConstraints = ifConstr :: testConstr :: branchConstr :: constraints
               loop(test :: yes :: no :: rest, newConstraints)
             case APP(ty, fn, arg) =>
-              // Commented version is from lingua-002, make sure they both work the same.
-              // val appConstr = Constraint(fn.ty, Type.TFN(arg.ty, ty))
-              val appConstr = Constraint(ty, Type.TFN(arg.ty, fn.ty))
+              val appConstr = Constraint(fn.ty, Type.TFN(arg.ty, ty))
               val newConstraints = appConstr :: constraints
               loop(fn :: arg :: rest, newConstraints)
             case LET(ty, binding, value, body) =>
