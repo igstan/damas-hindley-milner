@@ -1,7 +1,7 @@
 package bucharestfp
 
 class TypeEnv(bindings: Map[String, Type]) {
-  def lookup(key: String): Option[Type] = {
+  def get(key: String): Option[Type] = {
     bindings.get(key)
   }
 

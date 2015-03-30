@@ -23,7 +23,7 @@ object Annotate {
         val fnType = TFN(paramType, bodyType)
         Tysyn.FN(fnType, param, annotatedBody)
       case VAR(name) =>
-        tenv.lookup(name) match {
+        tenv.get(name) match {
           case None => throw UnboundIdentifier(name)
           case Some(ty) => Tysyn.VAR(ty, name)
         }
