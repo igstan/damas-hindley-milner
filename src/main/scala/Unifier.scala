@@ -34,15 +34,10 @@ object Unifier {
 
   def unifyVar(tvar1: Type.Var, ty: Type): Substitution = {
     ty match {
-      case TVAR(tvar2) =>
-        if (tvar1 == tvar2) Substitution.empty
-        else new Substitution(List(tvar1 -> ty))
-      case ty =>
-        if (tvar1.occursIn(ty)) {
-          throw new RuntimeException(s"Circular use: $tvar1 occurs in $ty")
-        } else {
-          new Substitution(List(tvar1 -> ty))
-        }
+      case TVAR(tvar2) if tvar1 == tvar2 => Substitution.empty
+      case TVAR(_)                       => new Substitution(List(tvar1 -> ty))
+      case ty if tvar1.occursIn(ty)      => throw new RuntimeException(s"Circular use: $tvar1 occurs in $ty")
+      case ty                            => new Substitution(List(tvar1 -> ty))
     }
   }
 }
