@@ -16,7 +16,21 @@ object Absyn {
   case class LET(binding: String, value: Absyn, body: Absyn) extends Absyn
 }
 
-sealed trait Type
+sealed trait Type {
+  def substitute(tvar: Type.Var, replacement: Type): Type = {
+    this match {
+      case TINT => this
+      case TBOOL => this
+      case TFN(paramTy, returnTy) =>
+        TFN(
+          paramTy.substitute(tvar, replacement),
+          returnTy.substitute(tvar, replacement)
+        )
+      case TVAR(candidate) if tvar == candidate => replacement
+      case _ => this
+    }
+  }
+}
 
 case object TINT extends Type
 case object TBOOL extends Type
