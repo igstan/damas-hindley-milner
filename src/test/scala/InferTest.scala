@@ -37,4 +37,18 @@ class InferTest extends FunSuite with Matchers {
       TFN(TFN(TINT, TBOOL), TINT)
     }
   }
+
+  test("let-bound polymorphism") {
+    Infer.typeOf(Parser.parse("""
+      let
+        val id = fn a => a
+      in
+        if id true
+        then id 1
+        else id 2
+      end
+    """)) should be {
+      TINT
+    }
+  }
 }
