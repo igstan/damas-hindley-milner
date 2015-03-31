@@ -4,16 +4,20 @@ object Unifier {
   import Type._
 
   def unify(constraints: List[Constraint]): Substitution = {
-    constraints match {
-      case Nil => Substitution.empty
-      case Constraint(ty1, ty2) :: tail =>
-        val tailConstraints = unify(tail)
-        val headConstraints = unifyPair(tailConstraints.apply(ty1), tailConstraints.apply(ty2))
-        tailConstraints.compose(headConstraints)
+    def loop(constraints: List[Constraint], subst: Substitution): Substitution = {
+      constraints match {
+        case Nil => subst
+        case Constraint(ty1, ty2) :: rest =>
+          val newSubst = unifyTypes(subst.apply(ty1), subst.apply(ty2))
+          loop(rest, subst.compose(newSubst))
+      }
     }
+
+    loop(constraints, Substitution.empty)
   }
 
-  def unifyPair(a: Type, b: Type): Substitution = {
+
+  def unifyTypes(a: Type, b: Type): Substitution = {
     (a, b) match {
       case (TINT, TINT) => Substitution.empty
       case (TBOOL, TBOOL) => Substitution.empty
