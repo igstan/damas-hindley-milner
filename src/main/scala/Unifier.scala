@@ -16,7 +16,8 @@ object Unifier {
         case Nil => subst
         case Constraint(ty1, ty2) :: rest =>
           val newSubst = unifyTypes(subst.apply(ty1), subst.apply(ty2))
-          loop(rest, subst.compose(newSubst))
+          val substitutedRest = rest.map(c => Constraint(newSubst.apply(c.a), newSubst.apply(c.b)))
+          loop(substitutedRest, subst.compose(newSubst))
       }
     }
 
