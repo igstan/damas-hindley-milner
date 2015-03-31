@@ -21,10 +21,10 @@ class InferTest extends FunSuite with Matchers {
       fn a => fn b => a
     """)) should be {
       TFN(
-        TVAR(Type.Var(3)),
+        TVAR(Type.Var(1)),
         TFN(
-          TVAR(Type.Var(4)),
-          TVAR(Type.Var(3))
+          TVAR(Type.Var(2)),
+          TVAR(Type.Var(1))
         )
       )
     }

@@ -47,6 +47,8 @@ object Type {
         case TFN(paramTy, returnTy) => occursIn(paramTy) || occursIn(returnTy)
       }
     }
+
+    override def toString = value.toString
   }
 
   private var counter = -1
@@ -54,6 +56,10 @@ object Type {
   def freshVar(): Type = {
     counter += 1
     TVAR(Var(counter))
+  }
+
+  def resetFreshness(): Unit = {
+    counter = 0
   }
 }
 
