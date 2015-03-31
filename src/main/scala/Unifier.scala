@@ -4,6 +4,11 @@ object Unifier {
   import Type._
 
   def unify(constraints: List[Constraint]): Substitution = {
+    // constraints.foldLeft(Substitution.empty) { (subst, constraint) =>
+    //   val t1 = subst.apply(constraint.a)
+    //   val t2 = subst.apply(constraint.b)
+    //   subst.compose(unifyTypes(t1, t2))
+    // }
     def loop(constraints: List[Constraint], subst: Substitution): Substitution = {
       constraints match {
         case Nil => subst
