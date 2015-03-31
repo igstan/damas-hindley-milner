@@ -10,11 +10,13 @@ object Unifier {
     //   subst.compose(unifyTypes(t1, t2))
     // }
     def loop(constraints: List[Constraint], subst: Substitution): Substitution = {
+      println(s"subst: $subst")
       constraints match {
         case Nil => subst
         case Constraint(ty1, ty2) :: rest =>
           val newSubst = unifyTypes(subst.apply(ty1), subst.apply(ty2))
-          loop(rest, subst.compose(newSubst))
+          val substitutedRest = rest.map(c => Constraint(newSubst.apply(c.a), newSubst.apply(c.b)))
+          loop(substitutedRest, subst.compose(newSubst))
       }
     }
 
