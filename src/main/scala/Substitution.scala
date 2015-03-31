@@ -19,7 +19,8 @@ case class Substitution(records: List[(Type.Var, Type)]) {
   }
 
   def compose(other: Substitution): Substitution = {
-    Substitution(records ++ other.records)
+    val subst = records.map { case (tvar, ty) => tvar -> other.apply(ty) }
+    Substitution(subst ++ other.records)
   }
 }
 
