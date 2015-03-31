@@ -10,7 +10,6 @@ object Unifier {
     //   subst.compose(unifyTypes(t1, t2))
     // }
     def loop(constraints: List[Constraint], subst: Substitution): Substitution = {
-      println(s"subst: $subst")
       constraints match {
         case Nil => subst
         case Constraint(ty1, ty2) :: rest =>
