@@ -1,5 +1,7 @@
 package bucharestfp
 
+case class UnificationFailure(a: Type, b: Type) extends RuntimeException(s"Cannot unify $a with $b")
+
 object Unifier {
   import Type._
 
@@ -37,7 +39,7 @@ object Unifier {
         ))
       case (TVAR(tvar), ty) => unifyVar(tvar, ty)
       case (ty, TVAR(tvar)) => unifyVar(tvar, ty)
-      case _ => throw new RuntimeException(s"Cannot unify $a with $b")
+      case _ => throw UnificationFailure(a, b)
     }
   }
 

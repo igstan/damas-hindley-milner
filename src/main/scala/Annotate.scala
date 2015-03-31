@@ -17,7 +17,7 @@ object Annotate {
         Tysyn.APP(Type.freshVar(), annotate(fn, tenv), annotate(arg, tenv))
       case FN(param, body) =>
         val paramType = Type.freshVar()
-        val extendedTenv = tenv.set(param, () => paramType)
+        val extendedTenv = tenv.set(param, TypeScheme.forall(Set.empty, paramType))
         val annotatedBody = annotate(body, extendedTenv)
         val bodyType = annotatedBody.ty
         val fnType = TFN(paramType, bodyType)
@@ -25,11 +25,11 @@ object Annotate {
       case VAR(name) =>
         tenv.get(name) match {
           case None => throw UnboundIdentifier(name)
-          case Some(ty) => Tysyn.VAR(ty, name)
+          case Some(typeScheme) => Tysyn.VAR(typeScheme.instantiate, name)
         }
       case LET(binding, value, body) =>
         val annotatedValue = annotate(value, tenv)
-        val extendedTenv = tenv.set(binding, () => annotatedValue.ty.instantiate)
+        val extendedTenv = tenv.set(binding, tenv.generalize(annotatedValue.ty))
         val annotatedBody = annotate(body, extendedTenv)
         val letType = Type.freshVar()
         Tysyn.LET(letType, binding, annotatedValue, annotatedBody)

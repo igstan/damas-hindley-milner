@@ -31,18 +31,12 @@ sealed trait Type {
     }
   }
 
-  def typeVars: Set[Type.Var] = {
+  def freeVars: Set[Type.Var] = {
     this match {
       case TINT => Set.empty
       case TBOOL => Set.empty
-      case TFN(paramTy, returnTy) => paramTy.typeVars ++ returnTy.typeVars
       case TVAR(tvar) => Set(tvar)
-    }
-  }
-
-  def instantiate: Type = {
-    typeVars.foldLeft(this) { (ty, tvar) =>
-      ty.substitute(tvar, Type.freshVar())
+      case TFN(paramTy, returnTy) => paramTy.freeVars ++ returnTy.freeVars
     }
   }
 }

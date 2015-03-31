@@ -19,5 +19,9 @@ object Main {
     println("typeOf(pred): " + Infer.typeOf(Parser.parse("""
       fn pred => if pred 1 then 2 else 3
     """)))
+
+    println("typeOf(compose): " + Infer.typeOf(Parser.parse("""
+      fn f => fn g => fn x => f (g x)
+    """)))
   }
 }
