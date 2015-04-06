@@ -12,6 +12,7 @@ object LatexCompiler {
     """))
 
     // val latex = compileAbsynTree(absyn)
+    Type.resetFreshness()
     val latex = compileTysynTree(Annotate.annotate(absyn, TypeEnv.empty))
 
     println(latex)
