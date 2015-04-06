@@ -71,7 +71,7 @@ object LatexCompiler {
         case TINT => "{int}"
         case TBOOL => "{bool}"
         case TFN(paramTy, returnTy) => "{" + subscript(paramTy) + "} \\rightarrow " + subscript(returnTy)
-        case TVAR(index) => "{t_" + index.toString + "}"
+        case TVAR(index) => "{t_{" + index.toString + "}}"
       }
     }
 
